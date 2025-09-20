@@ -1,0 +1,10 @@
+# 2 space indentation
+[*]
+indent_style = space
+indent_size = 2
+
+# 80 character width
+[*.{js,jsx,ts,tsx}]
+max_line_length = 80
+
+# End of file
