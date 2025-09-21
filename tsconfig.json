@@ -1,19 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "CommonJS",
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "strict": true,
+    "target": "ESNext",                // fine for modern builds
+    "module": "ESNext",                // tsup decides final output
+    "declaration": true,               // needed for dts generation
+    "emitDeclarationOnly": false,      // tsup controls emit
     "skipLibCheck": true,
-    "declaration": true,
-    // "declarationDir": "dist/types",
-    "emitDeclarationOnly": false,
-    "sourceMap": true,
+    "moduleResolution": "Bundler",     // or "NodeNext" if you prefer
     "esModuleInterop": true,
-    "types": ["node"],
-    "typeRoots": ["./node_modules/@types", "./src/@types"]
+    "sourceMap": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,                    // enable strict typing
+    "outDir": "dist"                   // tsup will also output here
   },
-  "include": ["src", "src/@types"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src"]
 }

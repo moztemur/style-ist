@@ -24,7 +24,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsup",
     "lint": "echo 'Linting is not implemented yet' && exit 0",
     "test": "echo 'Testing is not implemented yet' && exit 0"
   },
@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "@types/three": "^0.180.0",
+    "tsup": "^8.5.0",
     "typescript": "^5.5.4"
   }
 }
