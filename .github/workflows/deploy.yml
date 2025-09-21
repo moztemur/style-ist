@@ -77,23 +77,26 @@ jobs:
           name: Release v${{ steps.get_version.outputs.version }}
           generate_release_notes: true
 
-  build-publish-demo:
+  build-demo:
     needs: build-publish-library
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: demo
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-
-      - name: Switch to demo directory
-        run: cd demo
 
       - name: Install deps
         run: npm ci
@@ -101,14 +104,25 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Switch to demo directory
-        run: cd demo
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
+        with:
+          path: dist
+  
+  deploy-demo:
+    needs: build-demo
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: demo
+
+    steps:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
         with:
