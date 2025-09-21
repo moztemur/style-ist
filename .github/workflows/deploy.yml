@@ -98,10 +98,14 @@ jobs:
           node-version: 20
           cache: npm
 
+      - name: Install dependencies on library
+        working-directory: ../
+        run: npm install
+
       - name: Install deps
         run: npm ci
 
-      - name: Build
+      - name: Build Demo
         run: npm run build
 
       - name: Upload artifact
