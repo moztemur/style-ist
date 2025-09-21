@@ -1,8 +1,28 @@
 {
   "name": "style-ist",
   "version": "0.0.3",
-  "private": true,
   "type": "module",
+  "description": "A powerful TypeScript library for applying real-time facial styling effects using TensorFlow.js for face detection and Three.js for rendering. Perfect for creating virtual makeup and facial styling applications.",
+  "author": "Moztemur",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moztemur/style-ist"
+  },
+  "keywords": [
+    "style-ist",
+    "facial-styling",
+    "virtual-makeup",
+    "face-detection",
+    "three.js",
+    "tensorflow.js"
+  ],
+  "homepage": "https://github.com/moztemur/style-ist",
+  "bugs": {
+    "url": "https://github.com/moztemur/style-ist/issues"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "lint": "echo 'Linting is not implemented yet' && exit 0",
