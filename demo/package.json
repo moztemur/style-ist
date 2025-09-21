@@ -12,6 +12,7 @@
     "@tensorflow-models/face-landmarks-detection": "^1.0.6",
     "@tensorflow/tfjs": "^4.22.0",
     "@tensorflow/tfjs-backend-webgl": "^4.22.0",
+    "style-ist": "^0.0.4",
     "three": "^0.160.0"
   },
   "devDependencies": {
@@ -19,5 +20,3 @@
     "vite": "^5.3.4"
   }
 }
-
-

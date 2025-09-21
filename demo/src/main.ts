@@ -1,5 +1,4 @@
-import Stylist, { PredefinedStylingTools, TensorflowLocatorEngine, ThreePainterEngine } from '../../src'
-import PredefinedStylingTool from '../../src/PredefinedStylingTool'
+import Stylist, { PredefinedStylingTools, TensorflowLocatorEngine, ThreePainterEngine } from 'style-ist'
 import TensorflowBlushLocator from './blush/TensorflowBlushLocator'
 import ThreeBlushPainter from './blush/ThreeBlushPainter'
 import TensorflowMustacheLocator from './mustache/TensorflowMustacheLocator'
@@ -17,10 +16,10 @@ const colorEyeliner = document.getElementById('colorEyeliner') as HTMLInputEleme
 const colorBlush = document.getElementById('colorBlush') as HTMLInputElement
 const colorMustache = document.getElementById('colorMustache') as HTMLInputElement
 let stylist: Stylist | null = null
-let lip: PredefinedStylingTool<any, any> | null = null
-let eye: PredefinedStylingTool<any, any> | null = null
-let blush: PredefinedStylingTool<any, any> | null = null
-let mustache: PredefinedStylingTool<any, any> | null = null
+let lip: any | null = null
+let eye: any | null = null
+let blush: any | null = null
+let mustache: any | null = null
 let cameraOn = false
 
 async function startCamera() {
