@@ -2,6 +2,8 @@ import Stylist, { PredefinedStylingTools, TensorflowLocatorEngine, ThreePainterE
 import PredefinedStylingTool from '../../src/PredefinedStylingTool'
 import TensorflowBlushLocator from './blush/TensorflowBlushLocator'
 import ThreeBlushPainter from './blush/ThreeBlushPainter'
+import TensorflowMustacheLocator from './mustache/TensorflowMustacheLocator'
+import ThreeMustachePainter from './mustache/ThreeMustachePainter'
 
 const video = document.getElementById('video') as HTMLVideoElement
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
@@ -9,13 +11,16 @@ const btnCamera = document.getElementById('btnCamera') as HTMLButtonElement
 const btnLip = document.getElementById('btnLip') as HTMLButtonElement
 const btnEyeliner = document.getElementById('btnEyeliner') as HTMLButtonElement
 const btnBlush = document.getElementById('btnBlush') as HTMLButtonElement
+const btnMustache = document.getElementById('btnMustache') as HTMLButtonElement
 const colorLip = document.getElementById('colorLip') as HTMLInputElement
 const colorEyeliner = document.getElementById('colorEyeliner') as HTMLInputElement
 const colorBlush = document.getElementById('colorBlush') as HTMLInputElement
+const colorMustache = document.getElementById('colorMustache') as HTMLInputElement
 let stylist: Stylist | null = null
 let lip: PredefinedStylingTool<any, any> | null = null
 let eye: PredefinedStylingTool<any, any> | null = null
 let blush: PredefinedStylingTool<any, any> | null = null
+let mustache: PredefinedStylingTool<any, any> | null = null
 let cameraOn = false
 
 async function startCamera() {
@@ -31,6 +36,7 @@ async function startCamera() {
   if (!lip) { lip = stylist?.addPredefinedStylingTool(PredefinedStylingTools.LIPSTICK) }
   if (!eye) { eye = stylist?.addPredefinedStylingTool(PredefinedStylingTools.EYELINER) }
   if (!blush) { blush = stylist?.addCustomStylingTool('blush', new TensorflowBlushLocator(locatorEngine), new ThreeBlushPainter(painterEngine)) }
+  if (!mustache) { mustache = stylist?.addCustomStylingTool('mustache', new TensorflowMustacheLocator(locatorEngine), new ThreeMustachePainter(painterEngine)) }
 
   cameraOn = true
   btnCamera.textContent = 'Stop Camera'
@@ -61,10 +67,15 @@ btnBlush.addEventListener('click', () => {
   if (!blush) return
   if (blush.active) { blush.stop(); btnBlush.textContent = 'Apply Blush' } else { blush.start(); btnBlush.textContent = 'Remove Blush' }
 })
+btnMustache.addEventListener('click', () => {
+  if (!mustache) return
+  if (mustache.active) { mustache.stop(); btnMustache.textContent = 'Apply Mustache' } else { mustache.start(); btnMustache.textContent = 'Remove Mustache' }
+})
 
 colorLip.addEventListener('input', () => { if (lip) lip.stylingPainter.setColor(colorLip.value) })
 colorEyeliner.addEventListener('input', () => { if (eye) eye.stylingPainter.setColor(colorEyeliner.value) })
 colorBlush.addEventListener('input', () => { if (blush) blush.stylingPainter.setColor(colorBlush.value) })
+colorMustache.addEventListener('input', () => { if (mustache) mustache.stylingPainter.setColor(colorMustache.value) })
 
 window.addEventListener('beforeunload', () => { stopCamera() })
 
