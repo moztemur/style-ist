@@ -1,6 +1,6 @@
 import * as faceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
 
-import { TensorflowLocator, TensorflowLocatorEngine } from "../../../src";
+import { TensorflowLocator, TensorflowLocatorEngine } from "style-ist";
 
 class TensorflowMustacheLocator extends TensorflowLocator<MustacheLocations> {
   upperLip: {x: number, y: number}[] = [];

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { ThreePainter, ThreePainterEngine } from "../../../src";
+import { ThreePainter, ThreePainterEngine } from "style-ist";
 import { buildFillShapePx } from "../utils";
 
 class ThreeMustachePainter extends ThreePainter<MustacheLocations> {

@@ -4,6 +4,7 @@ import ThreePainterEngine from './painters/engines/ThreePainterEngine';
 import PredefinedStylingTools from './enums/PredefinedStylingTools';
 import TensorflowLocator from './locators/tensorflow/TensorflowLocator';
 import ThreePainter from './painters/three/ThreePainter';
+import StylingTool from './StylingTool';
 
 
 export {
@@ -12,7 +13,6 @@ export {
   ThreePainterEngine,
   PredefinedStylingTools,
   TensorflowLocator,
-  ThreePainter
+  ThreePainter,
+  StylingTool
 }
-
-export default Stylist;

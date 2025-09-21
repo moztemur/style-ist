@@ -1,4 +1,4 @@
-import { TensorflowLocator, TensorflowLocatorEngine } from "../../../src";
+import { TensorflowLocator, TensorflowLocatorEngine } from "style-ist";
 
 class TensorflowBlushLocator extends TensorflowLocator<BlushLocations> {
   leftCheek: {x: number, y: number}[] = [];

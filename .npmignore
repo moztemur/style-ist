@@ -3,3 +3,4 @@ tsconfig.json
 eslint.config.mjs
 .editorconfig
 demo
+demo-prev
