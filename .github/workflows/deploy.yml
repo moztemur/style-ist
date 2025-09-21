@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write   # Allow GitHub Actions to push changes (like updated package.json)
+      contents: write   # Allow GitHub Actions to push changes (like updated package.json) 
 
     steps:
       - name: Checkout code
