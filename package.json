@@ -1,6 +1,6 @@
 {
   "name": "style-ist",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "type": "module",
   "description": "A powerful TypeScript library for applying real-time facial styling effects using TensorFlow.js for face detection and Three.js for rendering. Perfect for creating virtual makeup and facial styling applications.",
   "author": "Moztemur",
