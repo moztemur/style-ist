@@ -15,70 +15,70 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-publish-library:
-    runs-on: ubuntu-latest
+  # build-publish-library:
+  #   runs-on: ubuntu-latest
 
-    permissions:
-      contents: write   # Allow GitHub Actions to push changes (like updated package.json) 
+  #   permissions:
+  #     contents: write   # Allow GitHub Actions to push changes (like updated package.json) 
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #       with:
+  #         token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: '20'
+  #         registry-url: 'https://registry.npmjs.org'
 
-      - name: Install dependencies
-        run: npm ci
+  #     - name: Install dependencies
+  #       run: npm ci
 
-      - name: Run Lint
-        run: npm run lint
+  #     - name: Run Lint
+  #       run: npm run lint
 
-      - name: Run Tests
-        run: npm test
+  #     - name: Run Tests
+  #       run: npm test
 
-      - name: Pull Latest Changes
-        run: git pull origin master
+  #     - name: Pull Latest Changes
+  #       run: git pull origin master
 
-      - name: Bump Version
-        run: |
-          npm version patch --no-git-tag-version
+  #     - name: Bump Version
+  #       run: |
+  #         npm version patch --no-git-tag-version
 
-      - name: Get Version
-        id: get_version
-        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+  #     - name: Get Version
+  #       id: get_version
+  #       run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
 
-      - name: Commit bumped version and create git tag
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add package.json package-lock.json
-          git commit -m "ci: bump version to v${{ steps.get_version.outputs.version }} [skip ci]"
-          git tag "v${{ steps.get_version.outputs.version }}"
-          git push origin master --tags
+  #     - name: Commit bumped version and create git tag
+  #       run: |
+  #         git config --global user.name 'github-actions[bot]'
+  #         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+  #         git add package.json package-lock.json
+  #         git commit -m "ci: bump version to v${{ steps.get_version.outputs.version }} [skip ci]"
+  #         git tag "v${{ steps.get_version.outputs.version }}"
+  #         git push origin master --tags
 
-      - name: Build Package
-        run: npm run build
+  #     - name: Build Package
+  #       run: npm run build
       
-      - name: Publish to NPM
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  #     - name: Publish to NPM
+  #       run: npm publish
+  #       env:
+  #         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ steps.get_version.outputs.version }}
-          name: Release v${{ steps.get_version.outputs.version }}
-          generate_release_notes: true
+  #     - name: Create GitHub Release
+  #       uses: softprops/action-gh-release@v2
+  #       with:
+  #         tag_name: v${{ steps.get_version.outputs.version }}
+  #         name: Release v${{ steps.get_version.outputs.version }}
+  #         generate_release_notes: true
 
   build-demo:
-    needs: build-publish-library
+  #  needs: build-publish-library
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -108,10 +108,13 @@ jobs:
       - name: Build Demo
         run: npm run build
 
+      - name: List files
+        run: ls -la
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: demo/dist
   
   deploy-demo:
     needs: build-demo
@@ -125,4 +128,4 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
         with:
-          path: dist
+          path: demo/dist
