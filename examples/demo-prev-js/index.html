@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Style-ist Demo (ES)</title>
+    <style>
+        body { 
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji"; 
+            margin: 0; 
+            padding: 16px; 
+        }
+        .row { 
+            display: flex; 
+            gap: 12px; 
+            align-items: center; 
+            flex-wrap: wrap; 
+        }
+        .col { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+        }
+        button { 
+            padding: 8px 12px; 
+        }
+        .stage { 
+            position: relative; 
+            width: min(100%, 720px); 
+        }
+        video { 
+            width: 100%; 
+            border-radius: 8px; 
+            background: #000; 
+        }
+        canvas { 
+            position: absolute; 
+            inset: 0; 
+            width: 100%; 
+            height: 100%; 
+            pointer-events: none; 
+        }
+    </style>
+</head>
+<body>
+    <div class="col" style="gap:16px;">
+        <div class="row">
+            <button id="btnCamera">Start Camera</button>
+        </div>
+        <div class="row">
+            <div class="row"><button id="btnLip">Apply Lipstick</button><input id="colorLip" type="color" value="#ff3366"/></div>
+            <div class="row"><button id="btnEyeliner">Apply Eyeliner</button><input id="colorEyeliner" type="color" value="#000000"/></div>
+        </div>
+        <div class="stage">
+            <video id="video" playsinline muted></video>
+            <canvas id="canvas"></canvas>
+        </div>
+    </div>
+
+    <!-- Add required dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@4.22.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection@1.0.6"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/style-ist/dist/index.global.js"></script>
+
+    <script>
+        // DOM Elements
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const btnCamera = document.getElementById('btnCamera');
+        const btnLip = document.getElementById('btnLip');
+        const btnEyeliner = document.getElementById('btnEyeliner');
+        const colorLip = document.getElementById('colorLip');
+        const colorEyeliner = document.getElementById('colorEyeliner');
+
+        // State variables
+        let stylist = null;
+        let lip = null;
+        let eye = null;
+        let cameraOn = false;
+
+        // Camera control functions
+        async function startCamera() {
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { facingMode: 'user' }, 
+                audio: false 
+            });
+            video.srcObject = stream;
+            await video.play();
+
+            const locatorEngine = new Stylist.TensorflowLocatorEngine(video);
+            const painterEngine = new Stylist.ThreePainterEngine(video, canvas);
+
+            if (!stylist) {
+                stylist = new Stylist.Stylist(locatorEngine, painterEngine);
+            }
+            await stylist.initialize();
+
+            if (!lip) {
+                lip = stylist.addPredefinedStylingTool(Stylist.PredefinedStylingTools.LIPSTICK);
+            }
+            if (!eye) {
+                eye = stylist.addPredefinedStylingTool(Stylist.PredefinedStylingTools.EYELINER);
+            }
+
+            cameraOn = true;
+            btnCamera.textContent = 'Stop Camera';
+        }
+
+        function stopCamera() {
+            if (stylist) {
+                stylist.stop();
+            }
+            if (video.srcObject) {
+                video.srcObject.getTracks().forEach(track => track.stop());
+            }
+            video.srcObject = null;
+            cameraOn = false;
+            btnCamera.textContent = 'Start Camera';
+        }
+
+        // Event Listeners
+        btnCamera.addEventListener('click', () => {
+            if (!cameraOn) {
+                startCamera();
+            } else {
+                stopCamera();
+            }
+        });
+
+        btnLip.addEventListener('click', () => {
+            if (!lip) return;
+            if (lip.active) {
+                lip.stop();
+                btnLip.textContent = 'Apply Lipstick';
+            } else {
+                lip.start();
+                btnLip.textContent = 'Remove Lipstick';
+            }
+        });
+
+        btnEyeliner.addEventListener('click', () => {
+            if (!eye) return;
+            if (eye.active) {
+                eye.stop();
+                btnEyeliner.textContent = 'Apply Eyeliner';
+            } else {
+                eye.start();
+                btnEyeliner.textContent = 'Remove Eyeliner';
+            }
+        });
+        // Color change handlers
+        colorLip.addEventListener('input', () => {
+            if (lip) lip.stylingPainter.setColor(colorLip.value);
+        });
+
+        colorEyeliner.addEventListener('input', () => {
+            if (eye) eye.stylingPainter.setColor(colorEyeliner.value);
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            stopCamera();
+        });
+    </script>
+</body>
+</html>

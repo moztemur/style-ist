@@ -16,10 +16,14 @@ A powerful TypeScript library for applying real-time facial styling effects usin
 
 ## Installation
 
-### Using npm
-
+Using npm:
 ```bash
 npm install style-ist
+```
+
+Using yarn:
+```bash
+yarn add style-ist
 ```
 
 ### Using CDN
@@ -37,12 +41,58 @@ You can also include Style-ist directly in your HTML file using a CDN:
 <script src="https://cdn.jsdelivr.net/npm/style-ist/dist/index.js"></script>
 ```
 
+## Examples
+
+You can find various implementation examples in the `examples` directory:
+
+- `demo-prev-ts/`: TypeScript implementation with Vite
+- `demo-prev-js/`: Pure JavaScript implementation (no build tools required)
+- `demo-prev-es-react/`: React implementation with ES6 and Vite
+
+Each example demonstrates different styling tools (lipstick, eyeliner, blush, mustache) and implementation approaches.
+
+### Running the Examples
+
+1. TypeScript Example (demo-prev-ts):
+```bash
+cd examples/demo-prev-ts
+# Using npm
+npm install
+npm run dev
+
+# Or using yarn
+yarn install
+yarn dev
+```
+
+2. Pure JavaScript Example (demo-prev-js):
+```bash
+cd examples/demo-prev-js
+# Use any HTTP server, for example:
+npx http-server
+# or
+yarn dlx http-server
+```
+
+3. React Example (demo-prev-es-react):
+```bash
+cd examples/demo-prev-es-react
+# Using npm
+npm install
+npm run dev
+
+# Or using yarn
+yarn install
+yarn dev
+```
+
 ## Quick Start
 
 ### Using TypeScript/ES Modules
 
 ```typescript
-import Stylist, { 
+import { 
+  Stylist,
   PredefinedStylingTools, 
   TensorflowLocatorEngine, 
   ThreePainterEngine 
@@ -127,16 +177,16 @@ stylist.stop();
             await video.play();
 
             // Create engines
-            const locatorEngine = new styleist.TensorflowLocatorEngine(video);
-            const painterEngine = new styleist.ThreePainterEngine(video, canvas);
+            const locatorEngine = new Stylist.TensorflowLocatorEngine(video);
+            const painterEngine = new Stylist.ThreePainterEngine(video, canvas);
 
             // Initialize stylist
-            stylist = new styleist.Stylist(locatorEngine, painterEngine);
+            stylist = new Stylist.Stylist(locatorEngine, painterEngine);
             await stylist.initialize();
 
             // Add lipstick tool
             lipstick = stylist.addPredefinedStylingTool(
-                styleist.PredefinedStylingTools.LIPSTICK
+                Stylist.PredefinedStylingTools.LIPSTICK
             );
         }
 
@@ -176,7 +226,7 @@ stylist.stop();
 </html>
 ```
 
-This example shows a simple implementation with lipstick effect. The library is exposed globally as `styleist` when using the CDN version.
+This example shows a simple implementation with lipstick effect. The library is exposed globally as `Stylist` when using the CDN version.
 
 ## Custom Styling Tools
 
@@ -236,10 +286,16 @@ Each styling tool (predefined or custom) provides:
 
 - Modern browser with WebGL support
 - Camera access for real-time effects
-- Dependencies:
-  - TensorFlow.js
-  - Three.js
-  - MediaPipe Face Mesh
+- Peer Dependencies:
+  ```json
+  {
+    "three": "^0.160.0",
+    "@tensorflow/tfjs": "^4.22.0",
+    "@tensorflow/tfjs-backend-webgl": "^4.22.0",
+    "@mediapipe/face_mesh": "^0.4.1633559619",
+    "@tensorflow-models/face-landmarks-detection": "^1.0.6"
+  }
+  ```
 
 ## Demo
 
