@@ -34,7 +34,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run Lint
         run: npm run lint
@@ -98,23 +98,18 @@ jobs:
           node-version: 20
           cache: npm
 
-      - name: Install dependencies on library
-        working-directory: ../
-        run: npm install
-
-      - name: Install deps
-        run: npm ci
+      - name: Install and build library
+        run: |
+          cd ..
+          npm ci
+          cd demo
+          npm ci
 
       - name: Build Demo
         run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
         with:
           path: dist
   
