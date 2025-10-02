@@ -1,12 +1,12 @@
-
 import * as tf from "@tensorflow/tfjs";
 import * as faceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
+import * as faceMesh from '@mediapipe/face_mesh';
 import LocatorEngine from "./LocatorEngine";
 import LocatorEngines from "../../enums/LocatorEngines";
 
-class TensorflowLocatorEngine extends LocatorEngine<TensorflowLocatorEngineOutput> {
-  constructor(video: HTMLVideoElement, config?: TensorflowLocatorEngineConfig) {
-    super(LocatorEngines.TENSORFLOW, video, config);
+class MediaPipeFaceMeshLocatorEngine extends LocatorEngine<MediaPipeFaceMeshLocatorEngineOutput> {
+  constructor(video: HTMLVideoElement, config?: MediaPipeFaceMeshLocatorEngineConfig) {
+    super(LocatorEngines.MEDIAPIPE_FACE_MESH, video, config);
   }
 
   async initialize(): Promise<void> {
@@ -17,14 +17,14 @@ class TensorflowLocatorEngine extends LocatorEngine<TensorflowLocatorEngineOutpu
       this.detector = await faceLandmarksDetection.createDetector(
         faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh,
         {
-          runtime: this.config?.runtime || 'mediapipe',
+          runtime: 'mediapipe',
           maxFaces: this.config?.maxFaces || 1,
           refineLandmarks: this.config?.refineLandmarks || true,
-          solutionPath: this.config?.solutionPath || "https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh",
+          solutionPath: `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@${faceMesh.VERSION}`
         }
       );
 
-      await this.detector.estimateFaces(tf.zeros([128, 128, 3]));
+      // await this.detector.estimateFaces(tf.zeros([128, 128, 3]));
     } catch (error) {
       console.error('error initializing detection', error);
     }
@@ -35,9 +35,9 @@ class TensorflowLocatorEngine extends LocatorEngine<TensorflowLocatorEngineOutpu
     this.locations = faces;
   }
 
-  getLocations(): TensorflowLocatorEngineOutput | null {
+  getLocations(): MediaPipeFaceMeshLocatorEngineOutput | null {
     return this.locations;
   }
 }
 
-export default TensorflowLocatorEngine;
+export default MediaPipeFaceMeshLocatorEngine;

@@ -21,6 +21,7 @@ class Smoother {
     y: number,
     alpha = SMOOTH_ALPHA
   ) {
+    
     if (!this.USED_INDICES.has(index)) return { x, y };
     const prev = this.smoothMap.get(index);
     if (!prev) {

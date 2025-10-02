@@ -1,81 +1,160 @@
-import {Stylist, PredefinedStylingTools, TensorflowLocatorEngine, ThreePainterEngine, StylingTool} from '../../src'
-import TensorflowBlushLocator from './blush/TensorflowBlushLocator'
-import ThreeBlushPainter from './blush/ThreeBlushPainter'
-import TensorflowMustacheLocator from './mustache/TensorflowMustacheLocator'
-import ThreeMustachePainter from './mustache/ThreeMustachePainter'
+import '@mediapipe/face_mesh';
+import '@tensorflow/tfjs';
+// Register WebGL backend.
+import '@tensorflow/tfjs-backend-webgl';
+import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection';
 
-const video = document.getElementById('video') as HTMLVideoElement
-const canvas = document.getElementById('canvas') as HTMLCanvasElement
+import {Stylist, PredefinedStylingTools, MediaPipeTaskVisionLocatorEngine, MediaPipeFaceMeshLocatorEngine, ThreePainterEngine, StylingTool} from '../../src'
+
+// Interface for managing a single video stream
+interface VideoStream {
+  video: HTMLVideoElement
+  canvas: HTMLCanvasElement
+  stylist: Stylist | null
+  lip: StylingTool<any, any> | null
+  eye: StylingTool<any, any> | null
+}
+
+// Get DOM elements
 const btnCamera = document.getElementById('btnCamera') as HTMLButtonElement
 const btnLip = document.getElementById('btnLip') as HTMLButtonElement
 const btnEyeliner = document.getElementById('btnEyeliner') as HTMLButtonElement
-const btnBlush = document.getElementById('btnBlush') as HTMLButtonElement
-const btnMustache = document.getElementById('btnMustache') as HTMLButtonElement
 const colorLip = document.getElementById('colorLip') as HTMLInputElement
 const colorEyeliner = document.getElementById('colorEyeliner') as HTMLInputElement
-const colorBlush = document.getElementById('colorBlush') as HTMLInputElement
-const colorMustache = document.getElementById('colorMustache') as HTMLInputElement
-let stylist: Stylist | null = null
-let lip: StylingTool<any, any> | null = null
-let eye: StylingTool<any, any> | null = null
-let blush: StylingTool<any, any> | null = null
-let mustache: StylingTool<any, any> | null = null
+
+// Setup FaceMesh stream
+const faceMeshStream: VideoStream = {
+  video: document.getElementById('video1') as HTMLVideoElement,
+  canvas: document.getElementById('canvas1') as HTMLCanvasElement,
+  stylist: null,
+  lip: null,
+  eye: null,
+}
+
+// Setup TaskVision stream
+const taskVisionStream: VideoStream = {
+  video: document.getElementById('video2') as HTMLVideoElement,
+  canvas: document.getElementById('canvas2') as HTMLCanvasElement,
+  stylist: null,
+  lip: null,
+  eye: null,
+}
+
 let cameraOn = false
 
+async function initializeStream(stream: VideoStream, LocatorEngineClass: typeof MediaPipeFaceMeshLocatorEngine | typeof MediaPipeTaskVisionLocatorEngine) {
+  try {
+    const locatorEngine = new LocatorEngineClass(stream.video)
+    const painterEngine = new ThreePainterEngine(stream.video, stream.canvas)
+    stream.stylist = new Stylist(locatorEngine, painterEngine)
+    await stream.stylist.initialize()
+    stream.lip = stream.stylist.addPredefinedStylingTool(PredefinedStylingTools.LIPSTICK)
+    stream.eye = stream.stylist.addPredefinedStylingTool(PredefinedStylingTools.EYELINER)
+    return true
+  } catch (error) {
+    console.error(`Failed to initialize ${LocatorEngineClass.name}:`, error)
+    return false
+  }
+}
+
 async function startCamera() {
-  const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
-  video.srcObject = stream
-  await video.play()
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
+    
+    // Setup FaceMesh stream
+    // faceMeshStream.video.srcObject = stream.clone()
+    // await faceMeshStream.video.play()
+    // const faceMeshSuccess = await initializeStream(faceMeshStream, MediaPipeFaceMeshLocatorEngine)
 
-  const locatorEngine = new TensorflowLocatorEngine(video);
-  const painterEngine = new ThreePainterEngine(video, canvas);
+    // Setup TaskVision stream
+    taskVisionStream.video.srcObject = stream.clone()
+    await taskVisionStream.video.play()
+    const taskVisionSuccess = await initializeStream(taskVisionStream, MediaPipeTaskVisionLocatorEngine)
 
-  if (!stylist) stylist = new Stylist(locatorEngine, painterEngine)
-  await stylist.initialize()
-  if (!lip) { lip = stylist?.addPredefinedStylingTool(PredefinedStylingTools.LIPSTICK) }
-  if (!eye) { eye = stylist?.addPredefinedStylingTool(PredefinedStylingTools.EYELINER) }
-  if (!blush) { blush = stylist?.addCustomStylingTool('blush', new TensorflowBlushLocator(locatorEngine), new ThreeBlushPainter(painterEngine)) }
-  if (!mustache) { mustache = stylist?.addCustomStylingTool('mustache', new TensorflowMustacheLocator(locatorEngine), new ThreeMustachePainter(painterEngine)) }
+    if (!taskVisionSuccess) {
+      throw new Error('Failed to initialize both engines')
+    }
 
-  cameraOn = true
-  btnCamera.textContent = 'Stop Camera'
+    cameraOn = true
+    btnCamera.textContent = 'Stop Camera'
+  } catch (error) {
+    console.error('Failed to start camera:', error)
+    stopCamera()
+    alert('Failed to start camera. Please check console for details.')
+  }
 }
 
 function stopCamera() {
-  stylist?.stop()
-  const tracks = (video.srcObject as MediaStream | null)?.getTracks()
-  tracks?.forEach(t => t.stop())
-  video.srcObject = null
+  // Stop FaceMesh stream
+  faceMeshStream.stylist?.stop()
+  const faceMeshTracks = (faceMeshStream.video.srcObject as MediaStream | null)?.getTracks()
+  faceMeshTracks?.forEach(t => t.stop())
+  faceMeshStream.video.srcObject = null
+
+  // Stop TaskVision stream
+  taskVisionStream.stylist?.stop()
+  const taskVisionTracks = (taskVisionStream.video.srcObject as MediaStream | null)?.getTracks()
+  taskVisionTracks?.forEach(t => t.stop())
+  taskVisionStream.video.srcObject = null
+
   cameraOn = false
   btnCamera.textContent = 'Start Camera'
 }
 
-btnCamera.addEventListener('click', () => {
-  if (!cameraOn) startCamera(); else stopCamera()
-})
-
+// Setup event listeners for both streams
 btnLip.addEventListener('click', () => {
-  if (!lip) return
-  if (lip.active) { lip.stop(); btnLip.textContent = 'Apply Lipstick' } else { lip.start(); btnLip.textContent = 'Remove Lipstick' }
+  const streams = [faceMeshStream, taskVisionStream]
+  const isActive = faceMeshStream.lip?.active || taskVisionStream.lip?.active
+
+  streams.forEach(stream => {
+    if (!stream.lip) return
+    if (isActive) {
+      stream.lip.stop()
+    } else {
+      stream.lip.start()
+    }
+  })
+
+  btnLip.textContent = isActive ? 'Apply Lipstick' : 'Remove Lipstick'
 })
+
 btnEyeliner.addEventListener('click', () => {
-  if (!eye) return
-  if (eye.active) { eye.stop(); btnEyeliner.textContent = 'Apply Eyeliner' } else { eye.start(); btnEyeliner.textContent = 'Remove Eyeliner' }
+  const streams = [faceMeshStream, taskVisionStream]
+  const isActive = faceMeshStream.eye?.active || taskVisionStream.eye?.active
+
+  streams.forEach(stream => {
+    if (!stream.eye) return
+    if (isActive) {
+      stream.eye.stop()
+    } else {
+      stream.eye.start()
+    }
+  })
+
+  btnEyeliner.textContent = isActive ? 'Apply Eyeliner' : 'Remove Eyeliner'
 })
-btnBlush.addEventListener('click', () => {
-  if (!blush) return
-  if (blush.active) { blush.stop(); btnBlush.textContent = 'Apply Blush' } else { blush.start(); btnBlush.textContent = 'Remove Blush' }
+
+colorLip.addEventListener('input', () => {
+  const streams = [faceMeshStream, taskVisionStream]
+  streams.forEach(stream => {
+    if (stream.lip) stream.lip.stylingPainter.setColor(colorLip.value)
+  })
 })
-btnMustache.addEventListener('click', () => {
-  if (!mustache) return
-  if (mustache.active) { mustache.stop(); btnMustache.textContent = 'Apply Mustache' } else { mustache.start(); btnMustache.textContent = 'Remove Mustache' }
+
+colorEyeliner.addEventListener('input', () => {
+  const streams = [faceMeshStream, taskVisionStream]
+  streams.forEach(stream => {
+    if (stream.eye) stream.eye.stylingPainter.setColor(colorEyeliner.value)
+  })
 })
 
-colorLip.addEventListener('input', () => { if (lip) lip.stylingPainter.setColor(colorLip.value) })
-colorEyeliner.addEventListener('input', () => { if (eye) eye.stylingPainter.setColor(colorEyeliner.value) })
-colorBlush.addEventListener('input', () => { if (blush) blush.stylingPainter.setColor(colorBlush.value) })
-colorMustache.addEventListener('input', () => { if (mustache) mustache.stylingPainter.setColor(colorMustache.value) })
+// Camera control
+btnCamera.addEventListener('click', () => {
+  if (!cameraOn) startCamera()
+  else stopCamera()
+})
 
-window.addEventListener('beforeunload', () => { stopCamera() })
-
-
+// Cleanup
+window.addEventListener('beforeunload', () => {
+  stopCamera()
+})

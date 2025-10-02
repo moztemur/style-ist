@@ -1,20 +1,20 @@
 import * as faceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
 import { dilatePointsPx } from "../../utils/utils";
 import Smoother from "../Smoother";
-import TensorflowLocator from "./TensorflowLocator";
-import TensorflowLocatorEngine from "../engines/TensorflowLocatorEngine";
+import MediaPipeFaceMeshLocator from "./MediaPipeFaceMeshLocator";
+import MediaPipeFaceMeshLocatorEngine from "../engines/MediaPipeFaceMeshLocatorEngine";
 
 const BASE_OUTER_DILATE_PX = 2; // cover corner gaps
 const INNER_MOUTH_EXPAND_PX = 1; // ensure teeth/tongue stay clear
 const FEATHER_WIDTHS_PX = [3, 6]; // two feather rings outward
 
-class TensorflowLipStickLocator extends TensorflowLocator<LipStickLocations> {
+class MediaPipeFaceMeshLipStickLocator extends MediaPipeFaceMeshLocator<LipStickLocations> {
 
   LIPS_INNER_ALL: number[];
   LIPS_OUTER_ALL: number[];
   smoother: Smoother;
 
-  constructor(locatorEngine: TensorflowLocatorEngine) {
+  constructor(locatorEngine: MediaPipeFaceMeshLocatorEngine) {
     super(locatorEngine);
     const contours = faceLandmarksDetection.util.getKeypointIndexByContour(
       faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh
@@ -56,4 +56,4 @@ class TensorflowLipStickLocator extends TensorflowLocator<LipStickLocations> {
   }
 }
 
-export default TensorflowLipStickLocator;
+export default MediaPipeFaceMeshLipStickLocator;

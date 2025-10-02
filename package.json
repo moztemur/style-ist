@@ -15,7 +15,8 @@
     "virtual-makeup",
     "face-detection",
     "three.js",
-    "tensorflow.js"
+    "tensorflow.js",
+    "mediapipe"
   ],
   "homepage": "https://github.com/moztemur/style-ist",
   "bugs": {
@@ -28,13 +29,13 @@
     "lint": "echo 'Linting is not implemented yet' && exit 0",
     "test": "echo 'Testing is not implemented yet' && exit 0"
   },
-  "dependencies": {},
   "peerDependencies": {
-    "three": "^0.160.0",
-    "@tensorflow/tfjs": "^4.22.0",
-    "@tensorflow/tfjs-backend-webgl": "^4.22.0",
     "@mediapipe/face_mesh": "^0.4.1633559619",
-    "@tensorflow-models/face-landmarks-detection": "^1.0.6"
+    "@mediapipe/tasks-vision": "^0.10.22-rc.20250304",
+    "@tensorflow-models/face-landmarks-detection": "^1.0.6",
+    "@tensorflow/tfjs": "^4.22.0",
+    "@tensorflow/tfjs-backend-webgl": "4.22.0",
+    "three": "^0.160.0"
   },
   "devDependencies": {
     "@types/three": "^0.180.0",

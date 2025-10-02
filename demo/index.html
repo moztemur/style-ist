@@ -9,9 +9,11 @@
       .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
       .col { display: flex; flex-direction: column; gap: 8px; }
       button { padding: 8px 12px; }
-      .stage { position: relative; width: min(100%, 720px); }
+      .stages { display: flex; gap: 16px; flex-wrap: wrap; }
+      .stage { position: relative; width: min(100%, 480px); }
       video { width: 100%; border-radius: 8px; background: #000; }
       canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+      .engine-label { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,0.5); color: white; padding: 4px 8px; border-radius: 4px; }
     </style>
   </head>
   <body>
@@ -22,16 +24,23 @@
       <div class="row">
         <div class="row"><button id="btnLip">Apply Lipstick</button><input id="colorLip" type="color" value="#ff3366"/></div>
         <div class="row"><button id="btnEyeliner">Apply Eyeliner</button><input id="colorEyeliner" type="color" value="#000000"/></div>
-        <div class="row"><button id="btnBlush">Apply Blush</button><input id="colorBlush" type="color" value="#ff6699"/></div>
-        <div class="row"><button id="btnMustache">Apply Mustache</button><input id="colorMustache" type="color" value="#4a2f1b"/></div>
       </div>
-      <div class="stage">
-        <video id="video" playsinline muted></video>
-        <canvas id="canvas"></canvas>
+      <div class="stages">
+        <!-- FaceMesh Engine -->
+        <!-- <div class="stage">
+          <div class="engine-label">MediaPipe FaceMesh</div>
+          <video id="video1" playsinline muted></video>
+          <canvas id="canvas1"></canvas>
+        </div> -->
+
+        <!-- TaskVision Engine -->
+        <div class="stage">
+          <div class="engine-label">MediaPipe TaskVision</div>
+          <video id="video2" playsinline muted></video>
+          <canvas id="canvas2"></canvas>
+        </div>
       </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
-  </html>
-
-
+</html>

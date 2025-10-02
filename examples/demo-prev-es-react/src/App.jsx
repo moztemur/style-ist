@@ -2,18 +2,18 @@ import { useEffect, useRef, useState } from 'react'
 import { 
   Stylist, 
   PredefinedStylingTools, 
-  TensorflowLocatorEngine, 
+  MediaPipeLocatorEngine, 
   ThreePainterEngine,
-  TensorflowLocator,
+  MediaPipeLocator,
   ThreePainter
 } from 'style-ist'
 import * as THREE from 'three'
 import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection'
 
 // Blush implementation
-class TensorflowBlushLocator extends TensorflowLocator {
-  constructor(tensorflowLocatorEngine) {
-    super(tensorflowLocatorEngine)
+class MediaPipeBlushLocator extends MediaPipeLocator {
+  constructor(mediaPipeLocatorEngine) {
+    super(mediaPipeLocatorEngine)
     this.CHEEKS_LEFT = [205, 36, 101, 118, 123, 147, 187]
     this.CHEEKS_RIGHT = [330, 347, 352, 376, 411, 425, 266]
   }
@@ -117,9 +117,9 @@ class ThreeBlushPainter extends ThreePainter {
 }
 
 // Mustache implementation
-class TensorflowMustacheLocator extends TensorflowLocator {
-  constructor(tensorflowLocatorEngine) {
-    super(tensorflowLocatorEngine)
+class MediaPipeMustacheLocator extends MediaPipeLocator {
+  constructor(mediaPipeLocatorEngine) {
+    super(mediaPipeLocatorEngine)
     const contours = faceLandmarksDetection.util.getKeypointIndexByContour(
       faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh
     )
@@ -255,7 +255,7 @@ function App() {
     videoRef.current.srcObject = stream
     await videoRef.current.play()
 
-    const locatorEngine = new TensorflowLocatorEngine(videoRef.current)
+    const locatorEngine = new MediaPipeLocatorEngine(videoRef.current)
     const painterEngine = new ThreePainterEngine(videoRef.current, canvasRef.current)
 
     const newStylist = new Stylist(locatorEngine, painterEngine)
@@ -265,12 +265,12 @@ function App() {
     const newEye = newStylist.addPredefinedStylingTool(PredefinedStylingTools.EYELINER)
     const newBlush = newStylist.addCustomStylingTool(
       'blush',
-      new TensorflowBlushLocator(locatorEngine),
+      new MediaPipeBlushLocator(locatorEngine),
       new ThreeBlushPainter(painterEngine)
     )
     const newMustache = newStylist.addCustomStylingTool(
       'mustache',
-      new TensorflowMustacheLocator(locatorEngine),
+      new MediaPipeMustacheLocator(locatorEngine),
       new ThreeMustachePainter(painterEngine)
     )
 

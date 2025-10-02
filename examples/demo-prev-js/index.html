@@ -58,10 +58,7 @@
     </div>
 
     <!-- Add required dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@4.22.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection@1.0.6"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22-rc.20250304"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/style-ist/dist/index.global.js"></script>
 
@@ -90,7 +87,7 @@
             video.srcObject = stream;
             await video.play();
 
-            const locatorEngine = new Stylist.TensorflowLocatorEngine(video);
+            const locatorEngine = new Stylist.MediaPipeLocatorEngine(video);
             const painterEngine = new Stylist.ThreePainterEngine(video, canvas);
 
             if (!stylist) {

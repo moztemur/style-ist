@@ -38,9 +38,9 @@ class Stylist {
   }
 
   async loop() {
-    this.requestAnimationFrameValue = requestAnimationFrame(this.loop.bind(this));
     await this.locatorEngine.detect();
     this.stylingToolSet.paintActiveStylingTools();
+    this.requestAnimationFrameValue = requestAnimationFrame(this.loop.bind(this));
   };
 
   async initialize() {

@@ -1,18 +1,22 @@
 import Stylist from './Stylist';
-import TensorflowLocatorEngine from './locators/engines/TensorflowLocatorEngine';
+import MediaPipeTaskVisionLocatorEngine from './locators/engines/MediaPipeTaskVisionLocatorEngine';
+import MediaPipeFaceMeshLocatorEngine from './locators/engines/MediaPipeFaceMeshLocatorEngine';
 import ThreePainterEngine from './painters/engines/ThreePainterEngine';
 import PredefinedStylingTools from './enums/PredefinedStylingTools';
-import TensorflowLocator from './locators/tensorflow/TensorflowLocator';
+import MediaPipeTaskVisionLocator from './locators/mediapipeTaskVision/MediaPipeTaskVisionLocator';
+import MediaPipeFaceMeshLocator from './locators/mediapipeFaceMesh/MediaPipeFaceMeshLocator';
 import ThreePainter from './painters/three/ThreePainter';
 import StylingTool from './StylingTool';
 
 
 export {
   Stylist,
-  TensorflowLocatorEngine,
+  MediaPipeTaskVisionLocatorEngine,
+  MediaPipeFaceMeshLocatorEngine,
   ThreePainterEngine,
   PredefinedStylingTools,
-  TensorflowLocator,
   ThreePainter,
-  StylingTool
+  MediaPipeTaskVisionLocator,
+  MediaPipeFaceMeshLocator,
+  StylingTool,
 }

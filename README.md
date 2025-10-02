@@ -14,6 +14,11 @@ A powerful TypeScript library for applying real-time facial styling effects usin
 - Browser-based, no server required
 - Written in TypeScript with full type support
 
+
+## Demo
+
+Check out the [live demo](https://moztemur.github.io/style-ist) to see Style-ist in action!
+
 ## Installation
 
 Using npm:
@@ -31,12 +36,6 @@ yarn add style-ist
 You can also include Style-ist directly in your HTML file using a CDN:
 
 ```html
-<!-- Add required dependencies -->
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh"></script>
-<script src="https://cdn.jsdelivr.net/npm/three"></script>
-
 <!-- Add Style-ist -->
 <script src="https://cdn.jsdelivr.net/npm/style-ist/dist/index.js"></script>
 ```
@@ -94,7 +93,7 @@ yarn dev
 import { 
   Stylist,
   PredefinedStylingTools, 
-  TensorflowLocatorEngine, 
+  MediaPipeTaskVisionLocatorEngine, 
   ThreePainterEngine 
 } from 'style-ist';
 
@@ -103,7 +102,7 @@ const video = document.getElementById('video') as HTMLVideoElement;
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 
 // Initialize engines
-const locatorEngine = new TensorflowLocatorEngine(video);
+const locatorEngine = new MediaPipeTaskVisionLocatorEngine(video);
 const painterEngine = new ThreePainterEngine(video, canvas);
 
 // Create stylist instance
@@ -150,9 +149,7 @@ stylist.stop();
     </div>
 
     <!-- Add required dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision"></script>
     <script src="https://cdn.jsdelivr.net/npm/three"></script>
     <script src="https://cdn.jsdelivr.net/npm/style-ist/dist/index.js"></script>
 
@@ -177,7 +174,7 @@ stylist.stop();
             await video.play();
 
             // Create engines
-            const locatorEngine = new Stylist.TensorflowLocatorEngine(video);
+            const locatorEngine = new Stylist.MediaPipeTaskVisionLocatorEngine(video);
             const painterEngine = new Stylist.ThreePainterEngine(video, canvas);
 
             // Initialize stylist
@@ -233,10 +230,10 @@ This example shows a simple implementation with lipstick effect. The library is 
 You can create custom styling tools by implementing your own locators and painters:
 
 ```typescript
-import { TensorflowLocator, ThreePainter } from 'style-ist';
+import { MediaPipeTaskVisionLocator, ThreePainter } from 'style-ist';
 
 // Create custom blush tool
-class BlushLocator extends TensorflowLocator {
+class BlushLocator extends MediaPipeTaskVisionLocator {
   // Implement face feature location logic
 }
 
@@ -257,7 +254,7 @@ const blush = stylist.addCustomStylingTool(
 ### Main Exports
 
 - `Stylist`: Main class for managing styling tools
-- `TensorflowLocatorEngine`: Face detection engine using TensorFlow.js
+- `MediaPipeTaskVisionLocatorEngine`: Face detection engine using MediaPipe Task Vision
 - `ThreePainterEngine`: Rendering engine using Three.js
 - `PredefinedStylingTools`: Enum of built-in styling tools
 
@@ -290,16 +287,9 @@ Each styling tool (predefined or custom) provides:
   ```json
   {
     "three": "^0.160.0",
-    "@tensorflow/tfjs": "^4.22.0",
-    "@tensorflow/tfjs-backend-webgl": "^4.22.0",
-    "@mediapipe/face_mesh": "^0.4.1633559619",
-    "@tensorflow-models/face-landmarks-detection": "^1.0.6"
+    "@mediapipe/tasks-vision": "^0.10.22-rc.20250304",
   }
   ```
-
-## Demo
-
-Check out the [live demo](https://moztemur.github.io/style-ist) to see Style-ist in action!
 
 ## License
 
@@ -308,3 +298,16 @@ MIT
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+## References
+
+### MediaPipe Face Mesh
+
+https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection
+https://storage.googleapis.com/tfjs-models/demos/face-landmarks-detection/index.html?model=mediapipe_face_mesh
+
+### MediaPipe Task Vision
+
+https://www.npmjs.com/package/@mediapipe/tasks-vision
+https://codepen.io/mediapipe-preview/pen/OJBVQJm
+https://ai.google.dev/edge/api/mediapipe/js/tasks-vision

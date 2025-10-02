@@ -1,24 +1,22 @@
-import * as faceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
+import { MediaPipeTaskVisionLocator, MediaPipeTaskVisionLocatorEngine } from "../../../src";
+import { FaceLandmarker } from '@mediapipe/tasks-vision'
 
-import { TensorflowLocator, TensorflowLocatorEngine } from "../../../src";
-
-class TensorflowMustacheLocator extends TensorflowLocator<MustacheLocations> {
+class MediaPipeTaskVisionMustacheLocator extends MediaPipeTaskVisionLocator<MustacheLocations> {
   upperLip: {x: number, y: number}[] = [];
   noseBottomLine: {x: number, y: number}[] = [];
 
   NOSE_BOTTOM_LINE: number[];
   LIPS_TOP_OUTER: number[];
 
-  constructor(tensorflowLocatorEngine: TensorflowLocatorEngine) {
-    super(tensorflowLocatorEngine);
-
-    const contours = faceLandmarksDetection.util.getKeypointIndexByContour(
-      faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh
-    );
+  constructor(mediaPipeLocatorEngine: MediaPipeTaskVisionLocatorEngine) {
+    super(mediaPipeLocatorEngine);  
+    const lips = FaceLandmarker.FACE_LANDMARKS_LIPS.map(({start, end}: {start: number, end: number}) => {
+      return start
+    })
 
     this.NOSE_BOTTOM_LINE = [432, 410, 322, 391, 393, 164, 167, 165, 92, 186, 57    ]
     // These points represent the upper lip area where we want to place the mustache
-    this.LIPS_TOP_OUTER = contours.lips.slice(11, 20);
+    this.LIPS_TOP_OUTER = lips.slice(11, 20);
   }
 
   locateForTool(): MustacheLocations {
@@ -43,4 +41,4 @@ class TensorflowMustacheLocator extends TensorflowLocator<MustacheLocations> {
   }
 }
 
-export default TensorflowMustacheLocator;
+export default MediaPipeTaskVisionMustacheLocator;

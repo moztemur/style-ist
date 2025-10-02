@@ -1,12 +1,12 @@
-import * as faceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
 import { dilatePointsPx } from "../../utils/utils";
 import Smoother from "../Smoother";
-import TensorflowLocatorEngine from "../engines/TensorflowLocatorEngine";
-import TensorflowLocator from "./TensorflowLocator";
+import MediaPipeTaskVisionLocatorEngine from "../engines/MediaPipeTaskVisionLocatorEngine";
+import MediaPipeTaskVisionLocator from "./MediaPipeTaskVisionLocator";
+import { FaceLandmarker } from '@mediapipe/tasks-vision'
 
 const EYELINER_WIDTH_PX = 5;               // thickness of eyeliner band in px (screen space)
 
-class TensorflowEyeLinerLocator extends TensorflowLocator<EyeLinerLocations> {
+class MediaPipeTaskVisionEyeLinerLocator extends MediaPipeTaskVisionLocator<EyeLinerLocations> {
 
   // LEFT_EYE_BOTTOM: number[];
   LEFT_EYE_TOP: number[];
@@ -17,17 +17,21 @@ class TensorflowEyeLinerLocator extends TensorflowLocator<EyeLinerLocations> {
   smoother: Smoother;
 
 
-  constructor(locatorEngine: TensorflowLocatorEngine) {
+  constructor(locatorEngine: MediaPipeTaskVisionLocatorEngine) {
     super(locatorEngine);
-    const contours = faceLandmarksDetection.util.getKeypointIndexByContour(
-      faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh
-    );
+ 
+    const leftEye = FaceLandmarker.FACE_LANDMARKS_LEFT_EYE.map(({start, end}: {start: number, end: number}) => {
+      return start
+    })
 
+    const rightEye = FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE.map(({start, end}: {start: number, end: number}) => {
+      return start
+    })
     // this.LEFT_EYE_BOTTOM = contours.leftEye.slice(0, 8);
-    this.LEFT_EYE_TOP = contours.leftEye.slice(9, 16).reverse();
+    this.LEFT_EYE_TOP = leftEye.slice(9, 16).reverse();
     // this.LEFT_EYE = [...this.LEFT_EYE_BOTTOM, ...this.LEFT_EYE_TOP];
     //  this.RIGHT_EYE_BOTTOM = contours.rightEye.slice(0, 8);
-    this.RIGHT_EYE_TOP = contours.rightEye.slice(9, 16).reverse();
+    this.RIGHT_EYE_TOP = rightEye.slice(9, 16).reverse();
     // this.RIGHT_EYE = [...this.RIGHT_EYE_BOTTOM, ...this.RIGHT_EYE_TOP];
 
 
@@ -42,13 +46,13 @@ class TensorflowEyeLinerLocator extends TensorflowLocator<EyeLinerLocations> {
       throw new Error('No locations found');
     }
 
-    const leftTopPx = this.smoother!.collectSmoothedPointsPx(this.LEFT_EYE_TOP, locations[0].keypoints);
+    const leftTopPx = this.smoother!.collectSmoothedPointsPx(this.LEFT_EYE_TOP, locations.faceLandmarks[0]);
     const leftOuterPx = dilatePointsPx(leftTopPx, EYELINER_WIDTH_PX);
-    const rightTopPx = this.smoother!.collectSmoothedPointsPx(this.RIGHT_EYE_TOP, locations[0].keypoints);
+    const rightTopPx = this.smoother!.collectSmoothedPointsPx(this.RIGHT_EYE_TOP, locations.faceLandmarks[0]);
     const rightOuterPx = dilatePointsPx(rightTopPx, EYELINER_WIDTH_PX);
 
     return { leftEyeTop: leftTopPx, rightEyeTop: rightTopPx, leftEyeTopOuter: leftOuterPx, rightEyeTopOuter: rightOuterPx };
   }
 }
 
-export default TensorflowEyeLinerLocator;
+export default MediaPipeTaskVisionEyeLinerLocator;

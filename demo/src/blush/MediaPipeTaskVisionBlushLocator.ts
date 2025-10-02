@@ -1,14 +1,14 @@
-import { TensorflowLocator, TensorflowLocatorEngine } from "style-ist";
+import { MediaPipeTaskVisionLocator, MediaPipeTaskVisionLocatorEngine } from "../../../src";
 
-class TensorflowBlushLocator extends TensorflowLocator<BlushLocations> {
+class MediaPipeTaskVisionBlushLocator extends MediaPipeTaskVisionLocator<BlushLocations> {
   leftCheek: {x: number, y: number}[] = [];
   rightCheek: {x: number, y: number}[] = [];
 
   CHEEKS_LEFT: number[];
   CHEEKS_RIGHT: number[];
 
-  constructor(tensorflowLocatorEngine: TensorflowLocatorEngine) {
-    super(tensorflowLocatorEngine);
+    constructor(mediaPipeLocatorEngine: MediaPipeTaskVisionLocatorEngine) {
+    super(mediaPipeLocatorEngine);
 
     this.CHEEKS_LEFT = [205, 36, 101, 118, 123, 147, 187];
     this.CHEEKS_RIGHT = [330, 347, 352, 376, 411, 425, 266];
@@ -36,6 +36,4 @@ class TensorflowBlushLocator extends TensorflowLocator<BlushLocations> {
   }
 }
 
-export default TensorflowBlushLocator;
-
-
+export default MediaPipeTaskVisionBlushLocator;

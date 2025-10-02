@@ -1,7 +1,10 @@
-import Stylist, { PredefinedStylingTools, TensorflowLocatorEngine, ThreePainterEngine } from 'style-ist'
-import TensorflowBlushLocator from './blush/TensorflowBlushLocator'
+import Stylist from 'style-ist'
+import PredefinedStylingTools from 'style-ist'
+import MediaPipeTaskVisionLocatorEngine from 'style-ist'
+import ThreePainterEngine from 'style-ist'
+import MediaPipeTaskVisionBlushLocator from './blush/MediaPipeTaskVisionBlushLocator'
 import ThreeBlushPainter from './blush/ThreeBlushPainter'
-import TensorflowMustacheLocator from './mustache/TensorflowMustacheLocator'
+import MediaPipeTaskVisionMustacheLocator from './mustache/MediaPipeTaskVisionMustacheLocator'
 import ThreeMustachePainter from './mustache/ThreeMustachePainter'
 
 const video = document.getElementById('video') as HTMLVideoElement
@@ -27,15 +30,15 @@ async function startCamera() {
   video.srcObject = stream
   await video.play()
 
-  const locatorEngine = new TensorflowLocatorEngine(video);
+  const locatorEngine = new MediaPipeTaskVisionLocatorEngine(video);
   const painterEngine = new ThreePainterEngine(video, canvas);
 
   if (!stylist) stylist = new Stylist(locatorEngine, painterEngine)
   await stylist.initialize()
   if (!lip) { lip = stylist?.addPredefinedStylingTool(PredefinedStylingTools.LIPSTICK) }
   if (!eye) { eye = stylist?.addPredefinedStylingTool(PredefinedStylingTools.EYELINER) }
-  if (!blush) { blush = stylist?.addCustomStylingTool('blush', new TensorflowBlushLocator(locatorEngine), new ThreeBlushPainter(painterEngine)) }
-  if (!mustache) { mustache = stylist?.addCustomStylingTool('mustache', new TensorflowMustacheLocator(locatorEngine), new ThreeMustachePainter(painterEngine)) }
+  if (!blush) { blush = stylist?.addCustomStylingTool('blush', new MediaPipeTaskVisionBlushLocator(locatorEngine), new ThreeBlushPainter(painterEngine)) }
+  if (!mustache) { mustache = stylist?.addCustomStylingTool('mustache', new MediaPipeTaskVisionMustacheLocator(locatorEngine), new ThreeMustachePainter(painterEngine)) }
 
   cameraOn = true
   btnCamera.textContent = 'Stop Camera'
@@ -77,5 +80,3 @@ colorBlush.addEventListener('input', () => { if (blush) blush.stylingPainter.set
 colorMustache.addEventListener('input', () => { if (mustache) mustache.stylingPainter.setColor(colorMustache.value) })
 
 window.addEventListener('beforeunload', () => { stopCamera() })
-
-
