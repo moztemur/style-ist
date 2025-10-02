@@ -15,6 +15,15 @@
       canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
       .engine-label { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,0.5); color: white; padding: 4px 8px; border-radius: 4px; }
     </style>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@4.22.0/dist/tf-backend-webgl.min.js"></script>
+        <!-- MediaPipe Face Mesh -->
+        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.min.js"></script>
+        <!-- Face Landmarks Detection -->
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection@1.0.6/dist/face-landmarks-detection.js"></script>
+
+        <!-- MediaPipe TaskVision -->
+        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22-rc.20250304/dist/tasks-vision.js"></script>
   </head>
   <body>
     <div class="col" style="gap:16px;">
@@ -24,14 +33,16 @@
       <div class="row">
         <div class="row"><button id="btnLip">Apply Lipstick</button><input id="colorLip" type="color" value="#ff3366"/></div>
         <div class="row"><button id="btnEyeliner">Apply Eyeliner</button><input id="colorEyeliner" type="color" value="#000000"/></div>
+        <div class="row"><button id="btnBlush">Apply Blush</button><input id="colorBlush" type="color" value="#ff9999"/></div>
+        <div class="row"><button id="btnMustache">Apply Mustache</button><input id="colorMustache" type="color" value="#4a3000"/></div>
       </div>
       <div class="stages">
         <!-- FaceMesh Engine -->
-        <!-- <div class="stage">
+        <div class="stage">
           <div class="engine-label">MediaPipe FaceMesh</div>
           <video id="video1" playsinline muted></video>
           <canvas id="canvas1"></canvas>
-        </div> -->
+        </div>
 
         <!-- TaskVision Engine -->
         <div class="stage">

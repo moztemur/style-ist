@@ -9,11 +9,7 @@
     "start": "npm run build && npm run preview"
   },
   "dependencies": {
-    "@mediapipe/face_mesh": "^0.4.1633559619",
-    "@mediapipe/tasks-vision": "^0.10.22-rc.20250304",
-    "@tensorflow-models/face-landmarks-detection": "^1.0.6",
-    "@tensorflow/tfjs": "^4.22.0",
-    "@tensorflow/tfjs-backend-webgl": "4.22.0",
+    "style-ist": "file:..",
     "three": "^0.160.0"
   },
   "devDependencies": {

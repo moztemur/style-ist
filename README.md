@@ -40,89 +40,91 @@ You can also include Style-ist directly in your HTML file using a CDN:
 <script src="https://cdn.jsdelivr.net/npm/style-ist/dist/index.js"></script>
 ```
 
-## Examples
+## Engines
 
-You can find various implementation examples in the `examples` directory:
+There are two types of engines that are provided by Style-ist:
+- Locators
+- Painters
 
-- `demo-prev-ts/`: TypeScript implementation with Vite
-- `demo-prev-js/`: Pure JavaScript implementation (no build tools required)
-- `demo-prev-es-react/`: React implementation with ES6 and Vite
+### Locators
 
-Each example demonstrates different styling tools (lipstick, eyeliner, blush, mustache) and implementation approaches.
+The term locator refers to the component that locates the face features for the styling tool. There are two types of built-in locators that are provided by MediaPipe:
+- [MediaPipe Tasks Vision](https://www.npmjs.com/package/@mediapipe/tasks-vision)
+- [MediaPipe Face Mesh (Legacy)](https://www.npmjs.com/package/@mediapipe/face_mesh)
 
-### Running the Examples
+### Painters
 
-1. TypeScript Example (demo-prev-ts):
-```bash
-cd examples/demo-prev-ts
-# Using npm
-npm install
-npm run dev
+The term painter refers to the component that paints the face features for the styling tool. There is one built-in painter:
+- [Three.js](https://www.npmjs.com/package/three)
 
-# Or using yarn
-yarn install
-yarn dev
+You need to initialize the locator and painter before you can use the styling tool.
+
+```JavaScript
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+
+let stylist = null;
+
+// Initialize Style-ist
+async function initializeStylist() {
+    const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'user' }, 
+        audio: false 
+    });
+    video.srcObject = stream;
+    await video.play();
+
+    // Create engines
+    const locatorEngine = new Stylist.MediaPipeTaskVisionLocatorEngine(video);
+    const painterEngine = new Stylist.ThreePainterEngine(video, canvas);
+
+    // Initialize stylist
+    stylist = new Stylist.Stylist(locatorEngine, painterEngine);
+    await stylist.initialize();
+}
 ```
 
-2. Pure JavaScript Example (demo-prev-js):
-```bash
-cd examples/demo-prev-js
-# Use any HTTP server, for example:
-npx http-server
-# or
-yarn dlx http-server
-```
-
-3. React Example (demo-prev-es-react):
-```bash
-cd examples/demo-prev-es-react
-# Using npm
-npm install
-npm run dev
-
-# Or using yarn
-yarn install
-yarn dev
-```
+In this example, we are using the MediaPipe TaskVision locator and Three.js painter.
 
 ## Quick Start
 
-### Using TypeScript/ES Modules
+### Prerequisites
 
-```typescript
-import { 
-  Stylist,
-  PredefinedStylingTools, 
-  MediaPipeTaskVisionLocatorEngine, 
-  ThreePainterEngine 
-} from 'style-ist';
+- If you will use Tasks Vision as locator engine, you need to add the following dependencies:
 
-// HTML elements
-const video = document.getElementById('video') as HTMLVideoElement;
-const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+```html
+<!-- MediaPipe TaskVision -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22-rc.20250304/dist/tasks-vision.js"></script>
+```
 
-// Initialize engines
-const locatorEngine = new MediaPipeTaskVisionLocatorEngine(video);
-const painterEngine = new ThreePainterEngine(video, canvas);
+or
 
-// Create stylist instance
-const stylist = new Stylist(locatorEngine, painterEngine);
-await stylist.initialize();
+```bash
+npm install @mediapipe/tasks-vision
+```
 
-// Add predefined styling tools
-const lipstick = stylist.addPredefinedStylingTool(PredefinedStylingTools.LIPSTICK);
-const eyeliner = stylist.addPredefinedStylingTool(PredefinedStylingTools.EYELINER);
+- If you will use Face Mesh (Legacy) as locator engine, you need to add the following dependencies:
 
-// Start/stop tools
-lipstick.start();
-eyeliner.start();
+```html
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@4.22.0/dist/tf-backend-webgl.min.js"></script>
+<!-- MediaPipe Face Mesh -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.min.js"></script>
+<!-- Face Landmarks Detection -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection@1.0.6/dist/face-landmarks-detection.js"></script>
+```
 
-// Change colors
-lipstick.stylingPainter.setColor('#FF0000');  // Red lipstick
-eyeliner.stylingPainter.setColor('#000000');  // Black eyeliner
 
-// Clean up
-stylist.stop();
+- For using Three.js as painter engine, you need to add the following dependencies:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/three"></script>
+```
+
+or
+
+```bash
+npm install three
 ```
 
 ### Using Pure JavaScript
@@ -225,6 +227,44 @@ stylist.stop();
 
 This example shows a simple implementation with lipstick effect. The library is exposed globally as `Stylist` when using the CDN version.
 
+### Using TypeScript/ES Modules
+
+```typescript
+import { 
+  Stylist,
+  PredefinedStylingTools, 
+  MediaPipeTaskVisionLocatorEngine, 
+  ThreePainterEngine 
+} from 'style-ist';
+
+// HTML elements
+const video = document.getElementById('video') as HTMLVideoElement;
+const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+
+// Initialize engines
+const locatorEngine = new MediaPipeTaskVisionLocatorEngine(video);
+const painterEngine = new ThreePainterEngine(video, canvas);
+
+// Create stylist instance
+const stylist = new Stylist(locatorEngine, painterEngine);
+await stylist.initialize();
+
+// Add predefined styling tools
+const lipstick = stylist.addPredefinedStylingTool(PredefinedStylingTools.LIPSTICK);
+const eyeliner = stylist.addPredefinedStylingTool(PredefinedStylingTools.EYELINER);
+
+// Start/stop tools
+lipstick.start();
+eyeliner.start();
+
+// Change colors
+lipstick.stylingPainter.setColor('#FF0000');  // Red lipstick
+eyeliner.stylingPainter.setColor('#000000');  // Black eyeliner
+
+// Clean up
+stylist.stop();
+```
+
 ## Custom Styling Tools
 
 You can create custom styling tools by implementing your own locators and painters:
@@ -249,47 +289,11 @@ const blush = stylist.addCustomStylingTool(
 );
 ```
 
-## API Reference
+## Examples
 
-### Main Exports
+You can find various implementation examples in the `examples` directory
 
-- `Stylist`: Main class for managing styling tools
-- `MediaPipeTaskVisionLocatorEngine`: Face detection engine using MediaPipe Task Vision
-- `ThreePainterEngine`: Rendering engine using Three.js
-- `PredefinedStylingTools`: Enum of built-in styling tools
-
-### Stylist Class
-
-```typescript
-class Stylist {
-  constructor(locatorEngine: LocatorEngine, painterEngine: PainterEngine);
-  
-  initialize(): Promise<void>;
-  addPredefinedStylingTool(tool: PredefinedStylingTools): PredefinedStylingTool;
-  addCustomStylingTool(name: string, locator: Locator, painter: Painter): StylingTool;
-  stop(): void;
-}
-```
-
-### Styling Tools
-
-Each styling tool (predefined or custom) provides:
-
-- `start()`: Activate the tool
-- `stop()`: Deactivate the tool
-- `stylingPainter.setColor(color: string)`: Change tool color
-
-## Requirements
-
-- Modern browser with WebGL support
-- Camera access for real-time effects
-- Peer Dependencies:
-  ```json
-  {
-    "three": "^0.160.0",
-    "@mediapipe/tasks-vision": "^0.10.22-rc.20250304",
-  }
-  ```
+TBD
 
 ## License
 

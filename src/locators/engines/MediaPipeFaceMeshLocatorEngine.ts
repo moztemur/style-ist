@@ -1,6 +1,5 @@
 import * as tf from "@tensorflow/tfjs";
 import * as faceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
-import * as faceMesh from '@mediapipe/face_mesh';
 import LocatorEngine from "./LocatorEngine";
 import LocatorEngines from "../../enums/LocatorEngines";
 
@@ -11,6 +10,14 @@ class MediaPipeFaceMeshLocatorEngine extends LocatorEngine<MediaPipeFaceMeshLoca
 
   async initialize(): Promise<void> {
     try {
+      if (!tf) {
+        throw new Error('TensorFlow.js is not loaded');
+      }
+
+      if (!faceLandmarksDetection) {
+        throw new Error('Face Landmarks Detection is not loaded');
+      }
+
       await tf.setBackend("webgl");
       await tf.ready();
 
@@ -20,17 +27,20 @@ class MediaPipeFaceMeshLocatorEngine extends LocatorEngine<MediaPipeFaceMeshLoca
           runtime: 'mediapipe',
           maxFaces: this.config?.maxFaces || 1,
           refineLandmarks: this.config?.refineLandmarks || true,
-          solutionPath: `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@${faceMesh.VERSION}`
+          solutionPath: `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh`
         }
       );
 
-      // await this.detector.estimateFaces(tf.zeros([128, 128, 3]));
+      await this.detector.estimateFaces(tf.zeros([128, 128, 3]));
     } catch (error) {
       console.error('error initializing detection', error);
     }
   }
 
   async detect(): Promise<void> {
+    if (!this.detector) {
+      throw new Error('Detector is not initialized');
+    }
     const faces = await this.detector.estimateFaces(this.video);
     this.locations = faces;
   }

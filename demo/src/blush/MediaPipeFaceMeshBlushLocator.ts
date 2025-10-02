@@ -1,13 +1,13 @@
-import { MediaPipeTaskVisionLocatorEngine, MediaPipeTaskVisionLocator } from "style-ist";
+import { MediaPipeFaceMeshLocatorEngine, MediaPipeFaceMeshLocator } from "style-ist";
 
-class MediaPipeTaskVisionBlushLocator extends MediaPipeTaskVisionLocator<BlushLocations> {
+class MediaPipeFaceMeshBlushLocator extends MediaPipeFaceMeshLocator<BlushLocations> {
   leftCheek: {x: number, y: number}[] = [];
   rightCheek: {x: number, y: number}[] = [];
 
   CHEEKS_LEFT: number[];
   CHEEKS_RIGHT: number[];
 
-    constructor(mediaPipeLocatorEngine: MediaPipeTaskVisionLocatorEngine) {
+    constructor(mediaPipeLocatorEngine: MediaPipeFaceMeshLocatorEngine) {
     super(mediaPipeLocatorEngine);
 
     this.CHEEKS_LEFT = [205, 36, 101, 118, 123, 147, 187];
@@ -21,11 +21,11 @@ class MediaPipeTaskVisionBlushLocator extends MediaPipeTaskVisionLocator<BlushLo
     }
 
     const lCore = this.CHEEKS_LEFT.map((idx) => {
-      const kp = locations.faceLandmarks[0][idx];
+      const kp = locations[0].keypoints[idx];
       return { x: kp.x, y: kp.y };
     });
     const rCore = this.CHEEKS_RIGHT.map((idx) => {
-      const kp = locations.faceLandmarks[0][idx];
+      const kp = locations[0].keypoints[idx];
       return { x: kp.x, y: kp.y };
     });
 
@@ -36,4 +36,4 @@ class MediaPipeTaskVisionBlushLocator extends MediaPipeTaskVisionLocator<BlushLo
   }
 }
 
-export default MediaPipeTaskVisionBlushLocator;
+export default MediaPipeFaceMeshBlushLocator;

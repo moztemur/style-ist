@@ -3,4 +3,13 @@ tsconfig.json
 eslint.config.mjs
 .editorconfig
 demo
-demo-prev
+examples
+.github
+.vscode
+.gitignore
+.git
+.prettierrc
+.prettierignore
+.prettierignore
+README.md
+tsup.config.ts

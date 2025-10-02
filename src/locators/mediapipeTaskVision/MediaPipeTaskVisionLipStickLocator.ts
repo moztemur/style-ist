@@ -4,8 +4,8 @@ import MediaPipeTaskVisionLocator from "./MediaPipeTaskVisionLocator";
 import MediaPipeTaskVisionLocatorEngine from "../engines/MediaPipeTaskVisionLocatorEngine";
 import { FaceLandmarker } from '@mediapipe/tasks-vision'
 
-const BASE_OUTER_DILATE_PX = 0; // cover corner gaps
-const INNER_MOUTH_EXPAND_PX = 0; // ensure teeth/tongue stay clear
+const BASE_OUTER_DILATE_PX = 2; // cover corner gaps
+const INNER_MOUTH_EXPAND_PX = 1; // ensure teeth/tongue stay clear
 const FEATHER_WIDTHS_PX = [3, 6]; // two feather rings outward
 
 class MediaPipeTaskVisionLipStickLocator extends MediaPipeTaskVisionLocator<LipStickLocations> {

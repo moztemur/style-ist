@@ -42,7 +42,6 @@ class Smoother {
       const idx = indices[i];
       const kp: Coordinate = pts[idx];
       const s = this.smoothPoint(idx, kp.x, kp.y);
-      // @ts-ignore
       arr.push({ x: s.x, y: s.y });
     }
     return arr;

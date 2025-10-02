@@ -1,14 +1,14 @@
-import { MediaPipeTaskVisionLocator, MediaPipeTaskVisionLocatorEngine } from "style-ist";
+import { MediaPipeFaceMeshLocatorEngine, MediaPipeFaceMeshLocator } from "style-ist";
 import { FaceLandmarker } from '@mediapipe/tasks-vision'
 
-class MediaPipeTaskVisionMustacheLocator extends MediaPipeTaskVisionLocator<MustacheLocations> {
+class MediaPipeFaceMeshMustacheLocator extends MediaPipeFaceMeshLocator<MustacheLocations> {
   upperLip: {x: number, y: number}[] = [];
   noseBottomLine: {x: number, y: number}[] = [];
 
   NOSE_BOTTOM_LINE: number[];
   LIPS_TOP_OUTER: number[];
 
-constructor(mediaPipeLocatorEngine: MediaPipeTaskVisionLocatorEngine) {
+constructor(mediaPipeLocatorEngine: MediaPipeFaceMeshLocatorEngine) {
     super(mediaPipeLocatorEngine);  
     const lips = FaceLandmarker.FACE_LANDMARKS_LIPS.map(({start, end}: {start: number, end: number}) => {
       return start
@@ -26,11 +26,11 @@ constructor(mediaPipeLocatorEngine: MediaPipeTaskVisionLocatorEngine) {
     }
 
     const upperLipPoints = this.LIPS_TOP_OUTER.map((idx) => {
-      const kp = locations.faceLandmarks[0][idx];
+      const kp = locations[0].keypoints[idx];
       return { x: kp.x, y: kp.y };
     });
     const noseBottomLine = this.NOSE_BOTTOM_LINE.map((idx) => {
-      const kp = locations.faceLandmarks[0][idx];
+      const kp = locations[0].keypoints[idx];
       return { x: kp.x, y: kp.y };
     });
 
@@ -41,4 +41,4 @@ constructor(mediaPipeLocatorEngine: MediaPipeTaskVisionLocatorEngine) {
   }
 }
 
-export default MediaPipeTaskVisionMustacheLocator;
+export default MediaPipeFaceMeshMustacheLocator;

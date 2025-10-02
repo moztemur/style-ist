@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { buildFillShapePx } from "../utils";
-import { ThreePainter, ThreePainterEngine } from "../../../src";
+import { ThreePainter, ThreePainterEngine } from "style-ist";
 
 class ThreeBlushPainter extends ThreePainter<BlushLocations> {
   leftBlushMesh: THREE.Mesh;

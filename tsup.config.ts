@@ -8,4 +8,5 @@ export default defineConfig({
   sourcemap: true,
   clean: true,               // clear dist before build
   outDir: 'dist',
+  platform: 'browser',
 })

@@ -2,15 +2,20 @@ import { useEffect, useRef, useState } from 'react'
 import { 
   Stylist, 
   PredefinedStylingTools, 
-  MediaPipeTaskVisionLocatorEngine, 
+  MediaPipeFaceMeshLocatorEngine, 
   ThreePainterEngine,
-  MediaPipeTaskVisionLocator,
+  MediaPipeFaceMeshLocator,
   ThreePainter
 } from 'style-ist'
+
 import * as THREE from 'three'
 
+// Access global variables from script tags
+const faceLandmarksDetection = window.faceLandmarksDetection
+const tf = window.tf
+
 // Blush implementation
-class MediaPipeBlushLocator extends MediaPipeTaskVisionLocator {
+class MediaPipeBlushLocator extends MediaPipeFaceMeshLocator {
   constructor(mediaPipeLocatorEngine) {
     super(mediaPipeLocatorEngine)
     this.CHEEKS_LEFT = [205, 36, 101, 118, 123, 147, 187]
@@ -254,7 +259,7 @@ function App() {
     videoRef.current.srcObject = stream
     await videoRef.current.play()
 
-    const locatorEngine = new MediaPipeTaskVisionLocatorEngine(videoRef.current)
+    const locatorEngine = new MediaPipeFaceMeshLocatorEngine(videoRef.current)
     const painterEngine = new ThreePainterEngine(videoRef.current, canvasRef.current)
 
     const newStylist = new Stylist(locatorEngine, painterEngine)
