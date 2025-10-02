@@ -118,6 +118,7 @@ jobs:
         run: |
           cd ..
           npm ci
+          npm run build
           cd demo
           npm ci
 
